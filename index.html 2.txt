@@ -1,0 +1,214 @@
+Index.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FocusCheck Pro</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #eef4f9;
+}
+
+header {
+    background: linear-gradient(90deg, #2a7de1, #5aa9ff);
+    color: white;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+nav {
+    background: #1e5fb3;
+    display: flex;
+    justify-content: center;
+}
+
+nav a {
+    color: white;
+    padding: 15px;
+    text-decoration: none;
+}
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+button {
+    padding: 12px 20px;
+    background: #2a7de1;
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1e5fb3;
+}
+
+#target {
+    width: 80px;
+    height: 80px;
+    background: red;
+    border-radius: 50%;
+    position: absolute;
+    display: none;
+}
+
+.memory-box {
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    margin: 5px;
+    background: #ccc;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>FocusCheck Pro</h1>
+    <p>Test, Track & Understand Attention Patterns</p>
+</header>
+
+<nav>
+    <a href="#about">About</a>
+    <a href="#reaction">Reaction Test</a>
+    <a href="#memory">Memory Test</a>
+</nav>
+
+<div class="container">
+
+<!-- ABOUT -->
+<div class="card" id="about">
+<h2>About</h2>
+<p>
+FocusCheck Pro helps track focus, reaction time, and memory—key indicators linked to attention behavior.
+</p>
+<p>⚠️ Not a diagnosis tool. For awareness only.</p>
+</div>
+
+<!-- REACTION TEST -->
+<div class="card" id="reaction">
+<h2>Reaction Test</h2>
+<button onclick="startReaction()">Start</button>
+<div id="target"></div>
+<p id="reactionScore"></p>
+</div>
+
+<!-- MEMORY TEST -->
+<div class="card" id="memory">
+<h2>Memory Test</h2>
+<button onclick="startMemory()">Start</button>
+<div id="memoryGrid"></div>
+<p id="memoryScore"></p>
+</div>
+
+<!-- RESULT -->
+<div class="card">
+<h2>Session Result</h2>
+<p id="finalResult">Complete tests to see your profile.</p>
+</div>
+
+</div>
+
+<script>
+let reactionScore = 0;
+let memoryScore = 0;
+
+// Reaction Test
+function startReaction() {
+    reactionScore = 0;
+    spawn();
+}
+
+function spawn() {
+    let target = document.getElementById("target");
+    let x = Math.random() * (window.innerWidth - 100);
+    let y = Math.random() * (window.innerHeight - 100);
+
+    target.style.left = x + "px";
+    target.style.top = y + "px";
+    target.style.display = "block";
+
+    target.onclick = function() {
+        reactionScore++;
+        document.getElementById("reactionScore").innerText =
+            "Hits: " + reactionScore;
+        target.style.display = "none";
+        setTimeout(spawn, 800);
+    };
+
+    setTimeout(() => {
+        target.style.display = "none";
+        updateFinal();
+    }, 8000);
+}
+
+// Memory Test
+function startMemory() {
+    let grid = document.getElementById("memoryGrid");
+    grid.innerHTML = "";
+    memoryScore = 0;
+
+    let pattern = Math.floor(Math.random() * 6);
+
+    for (let i = 0; i < 6; i++) {
+        let box = document.createElement("div");
+        box.className = "memory-box";
+
+        if (i === pattern) {
+            setTimeout(() => box.style.background = "green", 300);
+            setTimeout(() => box.style.background = "#ccc", 1000);
+        }
+
+        box.onclick = function() {
+            if (i === pattern) {
+                memoryScore++;
+                document.getElementById("memoryScore").innerText =
+                    "Correct!";
+            } else {
+                document.getElementById("memoryScore").innerText =
+                    "Wrong!";
+            }
+            updateFinal();
+        };
+
+        grid.appendChild(box);
+    }
+}
+
+// Final Result
+function updateFinal() {
+    let result = "";
+
+    if (reactionScore > 5 && memoryScore > 0) {
+        result = "Strong attention performance.";
+    } else if (reactionScore > 2) {
+        result = "Moderate attention patterns.";
+    } else {
+        result = "Low attention indicators detected.";
+    }
+
+    document.getElementById("finalResult").innerText = result;
+}
+</script>
+
+</body>
+</html>
